@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445423735189",
+    "project_id": "hourly-c7219",
+    "storage_bucket": "hourly-c7219.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445423735189:android:448cc7aab48e9a46a3a69c",
+        "android_client_info": {
+          "package_name": "com.ranty97.headhunter.hourly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnEbvIMnZ30_RzcLhJnM85dM96tQHrFhM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
