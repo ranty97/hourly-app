@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:hourly/homescreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -68,23 +70,61 @@ class _LoginScreenState extends State<LoginScreen> {
                   customInputField("Enter your employee ID", idController, Icons.person, false),
                   fieldTitle("Password"),
                   customInputField("Enter your password", passwordController, Icons.key, true),
-                  Container(
-                    height: 65,
-                    width: screenWidth,
-                    margin: EdgeInsets.only(top: screenHeight / 200),
-                    decoration: BoxDecoration(
-                      color: primary,
-                      borderRadius: const BorderRadius.all(Radius.circular(35))
-                    ),
-                    child: Center(
-                      child: Text(
-                          "Access",
-                          style: TextStyle(
-                            fontSize: screenWidth / 15,
-                            fontFamily: "Nexa Bold",
-                            color: Colors.white,
-                            letterSpacing: 1.5,
-                          ),
+                  GestureDetector(
+                    onTap: () async {
+                      FocusScope.of(context).unfocus();
+                      String id = idController.text.trim();
+                      String password = passwordController.text.trim();
+
+                      if (id.isEmpty) {
+                        showCustomBottomSheet(context, "ID is steel empty");
+                      } else if (password.isEmpty) {
+                        showCustomBottomSheet(context, "Password is still empty");
+                      } else {
+                        QuerySnapshot snap = await FirebaseFirestore.instance
+                            .collection("Employees")
+                            .where('id', isEqualTo: id)
+                            .get();
+
+                        try {
+                          if(password == snap.docs[0]['password']) {
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+                          } else {
+                            showCustomBottomSheet(context, "Invalid password");
+                          }
+                        } catch (e) {
+                          String error = "";
+                          if (e.toString() == "RangeError (length): Invalid value: Valid value range is empty: 0") {
+                            setState(() {
+                              error = "ID doesn't exists";
+                            });
+                          } else {
+                            setState(() {
+                              error = "Error occurred";
+                            });
+                          }
+                          showCustomBottomSheet(context, error);
+                        }
+                      }
+                    },
+                    child: Container(
+                      height: 65,
+                      width: screenWidth,
+                      margin: EdgeInsets.only(top: screenHeight / 200),
+                      decoration: BoxDecoration(
+                        color: primary,
+                        borderRadius: const BorderRadius.all(Radius.circular(35))
+                      ),
+                      child: Center(
+                        child: Text(
+                            "Access",
+                            style: TextStyle(
+                              fontSize: screenWidth / 15,
+                              fontFamily: "Nexa Bold",
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                            ),
+                        ),
                       ),
                     ),
                   )
@@ -158,4 +198,48 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+void showCustomBottomSheet(BuildContext context, String message) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.redAccent,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+    ),
+    builder: (BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              message,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.redAccent, backgroundColor: Colors.white, shape: CircleBorder(),
+                padding: const EdgeInsets.all(20),
+              ),
+              child: const Text(
+                "OK",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
