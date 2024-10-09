@@ -11,11 +11,19 @@ class CheckScreen extends StatefulWidget {
 class _CheckScreenState extends State<CheckScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          "TODO: CheckScreen",
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Welcome"
+              ),
+            )
+          ],
         ),
-      ),
+      )
     );  }
 }

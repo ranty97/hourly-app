@@ -16,10 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double screenWidth = 0;
 
   Color primary = const Color(0xFF0077B6);
-
   int currentIndex = 0;
-
-  bool condition = true;
 
   List<IconData> navigationIcons = [
     FontAwesomeIcons.calendarDay,
@@ -27,14 +24,21 @@ class _HomeScreenState extends State<HomeScreen> {
     FontAwesomeIcons.userTie,
   ];
 
+  final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
         children: const [
           CalendarScreen(),
           CheckScreen(),
@@ -51,41 +55,41 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(40)),
-          boxShadow:[
+          boxShadow: [
             BoxShadow(
               color: Colors.black26,
               blurRadius: 10,
               offset: Offset(2, 2),
             ),
-          ]
+          ],
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(40)),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for(int i = 0; i < navigationIcons.length; i++)...<Expanded>{
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        currentIndex = i;
-                      });
-                    },
-                    child: SizedBox(
-                      height: screenHeight,
-                      width: screenWidth,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              navigationIcons[i],
-                              color: i == currentIndex ? primary : Colors.black26,
-                              size: i == currentIndex ? 30 : 26,
-                            ),
-                            condition ? Container(
+            children: List.generate(navigationIcons.length, (i) {
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      currentIndex = i;
+                    });
+                    _pageController.jumpToPage(i);
+                  },
+                  child: SizedBox(
+                    height: screenHeight,
+                    width: screenWidth,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            navigationIcons[i],
+                            color: i == currentIndex ? primary : Colors.black26,
+                            size: i == currentIndex ? 30 : 26,
+                          ),
+                          if (currentIndex == i) ...[
+                            Container(
                               margin: EdgeInsets.all(screenWidth / 100),
                               height: 3,
                               width: 24,
@@ -93,15 +97,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: const BorderRadius.all(Radius.circular(40)),
                                 color: primary,
                               ),
-                            ) : const SizedBox(),
+                            ),
                           ],
-                        ),
+                        ],
                       ),
                     ),
                   ),
-                )
-              }
-            ],
+                ),
+              );
+            }),
           ),
         ),
       ),
