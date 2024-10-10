@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+
+import 'model/user.dart';
 
 class CheckScreen extends StatefulWidget {
   const CheckScreen({super.key});
@@ -39,7 +42,7 @@ class _CheckScreenState extends State<CheckScreen> {
             Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Employee",
+                "Employee ${User.username}",
                 style: TextStyle(
                   fontFamily: "Nexa Bold",
                   fontSize: screenWidth / 18,
@@ -129,7 +132,7 @@ class _CheckScreenState extends State<CheckScreen> {
               margin: const EdgeInsets.only(top: 20),
               child: RichText(
                   text: TextSpan(
-                    text: "11 ",
+                    text: "${DateTime.now().day} ",
                     style: TextStyle(
                       color: primary,
                       fontSize: screenWidth / 18,
@@ -137,7 +140,7 @@ class _CheckScreenState extends State<CheckScreen> {
                     ),
                     children: [
                       TextSpan(
-                        text: "Oct 2024",
+                        text: DateFormat('MMMM yyyy').format(DateTime.now()),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: screenWidth / 20,
@@ -148,16 +151,21 @@ class _CheckScreenState extends State<CheckScreen> {
                   ),
               ),
             ),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "12:00:00",
-                style: TextStyle(
-                    fontFamily: "Nexa Regular",
-                    fontSize: screenWidth / 18 ,
-                    color: Colors.black54
-                ),
-              ),
+            StreamBuilder(
+              stream: Stream.periodic(const Duration(seconds: 1)),
+              builder: (context, snapshot) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    DateFormat('hh:mm:ss a').format(DateTime.now()),
+                    style: TextStyle(
+                        fontFamily: "Nexa Regular",
+                        fontSize: screenWidth / 18 ,
+                        color: Colors.black54
+                    ),
+                  ),
+                );
+              }
             ),
             Container(
               margin: const EdgeInsets.only(top: 24),
@@ -175,8 +183,8 @@ class _CheckScreenState extends State<CheckScreen> {
                       innerColor: primary,
                       key: key,
                       onSubmit: () {
-                        key.currentState?.reset();
-                        return null;
+                        print(DateFormat('mm:hh').format(DateTime.now()));
+
                       },
                     );
                   },
