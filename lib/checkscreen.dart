@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -222,6 +224,12 @@ class _CheckScreenState extends State<CheckScreen> {
                       innerColor: primary,
                       key: key,
                       onSubmit: () async {
+                        Timer(
+                          const Duration(milliseconds: 600),
+                            () {
+                              key.currentState!.reset();
+                            }
+                        );
                         QuerySnapshot snap = await FirebaseFirestore.instance
                             .collection("Employees")
                             .where('id', isEqualTo: User.username)
@@ -238,6 +246,9 @@ class _CheckScreenState extends State<CheckScreen> {
 
                         try {
                           String checkIn = snap2['checkIn'];
+                          setState(() {
+                            checkOut = DateFormat('hh:mm').format(DateTime.now());
+                          });
                           await FirebaseFirestore.instance
                               .collection("Employees")
                               .doc(snap.docs[0].id)
@@ -249,6 +260,9 @@ class _CheckScreenState extends State<CheckScreen> {
                             'checkOut': DateFormat('hh:mm a').format(DateTime.now()),
                           });
                         } catch (e) {
+                          setState(() {
+                            checkIn = DateFormat('hh:mm').format(DateTime.now());
+                          });
                           await FirebaseFirestore.instance
                               .collection("Employees")
                               .doc(snap.docs[0].id)
@@ -264,7 +278,7 @@ class _CheckScreenState extends State<CheckScreen> {
                     );
                   },
               ),
-            ) : Text("You have completed this day")
+            ) : const Text("You have completed this day")
           ],
         ),
       )
