@@ -5,6 +5,7 @@ import 'package:hourly/calendarscreen.dart';
 import 'package:hourly/checkscreen.dart';
 import 'package:hourly/model/user.dart';
 import 'package:hourly/profilescreen.dart';
+import 'package:hourly/service/location.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,8 +32,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
+    _startLocationService();
     getId();
+  }
+
+  void _startLocationService() async {
+    LocationService().initialize();
+
+    LocationService().getLongitude().then((onValue) {
+      setState(() {
+        User.long = onValue!;
+      });
+
+      LocationService().getLatitude().then((onValue) {
+        setState(() {
+          User.lat = onValue!;
+        });
+      });
+    });
   }
 
   void getId() async {
@@ -61,10 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
             currentIndex = index;
           });
         },
-        children: [
-          new CalendarScreen(),
-          new CheckScreen(),
-          new ProfileScreen(),
+        children: const [
+          CalendarScreen(),
+          CheckScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(

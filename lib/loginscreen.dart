@@ -236,7 +236,7 @@ void showCustomBottomSheet(BuildContext context, String message) {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.redAccent, backgroundColor: Colors.white, shape: CircleBorder(),
+                foregroundColor: Colors.redAccent, backgroundColor: Colors.white, shape: const CircleBorder(),
                 padding: const EdgeInsets.all(20),
               ),
               child: const Text(

@@ -44,6 +44,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   slide_to_act: ^2.0.2
   month_year_picker: ^0.4.0+1
+  location: ^7.0.1
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:
