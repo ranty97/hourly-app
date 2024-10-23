@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hourly/calendarscreen.dart';
 import 'package:hourly/checkscreen.dart';
+import 'package:hourly/model/user.dart';
 import 'package:hourly/profilescreen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   double screenHeight = 0;
   double screenWidth = 0;
 
+  String id = '';
+
   Color primary = const Color(0xFF0077B6);
   int currentIndex = 1;
 
@@ -23,6 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
     FontAwesomeIcons.check,
     FontAwesomeIcons.userTie,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getId();
+  }
+
+  void getId() async {
+    QuerySnapshot snap = await FirebaseFirestore.instance
+        .collection("Employees")
+        .where('id', isEqualTo: User.employeeId)
+        .get();
+
+    setState(() {
+      User.id = snap.docs[0].id;
+    });
+  }
 
   final PageController _pageController = PageController();
 
@@ -39,10 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
             currentIndex = index;
           });
         },
-        children: const [
-          CalendarScreen(),
-          CheckScreen(),
-          ProfileScreen(),
+        children: [
+          new CalendarScreen(),
+          new CheckScreen(),
+          new ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(
@@ -86,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icon(
                             navigationIcons[i],
                             color: i == currentIndex ? primary : Colors.black26,
-                            size: i == currentIndex ? 30 : 26,
+                            size: i == currentIndex ? 30 : 24,
                           ),
                           if (currentIndex == i) ...[
                             Container(

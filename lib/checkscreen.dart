@@ -33,7 +33,7 @@ class _CheckScreenState extends State<CheckScreen> {
     try {
       QuerySnapshot snap = await FirebaseFirestore.instance
           .collection("Employees")
-          .where('id', isEqualTo: User.username)
+          .where('id', isEqualTo: User.employeeId)
           .get();
 
       DocumentSnapshot snap2 = await FirebaseFirestore
@@ -72,7 +72,7 @@ class _CheckScreenState extends State<CheckScreen> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(top: 32),
               child: Text(
-                "Welcome",
+                "Здравствуйте",
                 style: TextStyle(
                   color: Colors.black54,
                   fontFamily: "Nexa Regular",
@@ -83,7 +83,7 @@ class _CheckScreenState extends State<CheckScreen> {
             Container(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Employee ${User.username}",
+                "Сотрудник ${User.employeeId}",
                 style: TextStyle(
                   fontFamily: "Nexa Bold",
                   fontSize: screenWidth / 18,
@@ -94,7 +94,7 @@ class _CheckScreenState extends State<CheckScreen> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(top: 34),
               child: Text(
-                "Today's status",
+                "Сегодня",
                 style: TextStyle(
                   fontFamily: "Nexa Bold",
                   fontSize: screenWidth / 18,
@@ -123,7 +123,7 @@ class _CheckScreenState extends State<CheckScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "Check In",
+                            "Вход",
                             style: TextStyle(
                                 fontFamily: "Nexa Regular",
                                 fontSize: screenWidth / 20,
@@ -147,7 +147,7 @@ class _CheckScreenState extends State<CheckScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "Check Out",
+                            "Выход",
                             style: TextStyle(
                               fontFamily: "Nexa Regular",
                               fontSize: screenWidth / 20,
@@ -181,7 +181,7 @@ class _CheckScreenState extends State<CheckScreen> {
                     ),
                     children: [
                       TextSpan(
-                        text: DateFormat('MMMM yyyy').format(DateTime.now()),
+                        text: DateFormat('MM yyyy').format(DateTime.now()),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: screenWidth / 20,
@@ -215,7 +215,7 @@ class _CheckScreenState extends State<CheckScreen> {
                     final GlobalKey<SlideActionState> key = GlobalKey();
 
                     return SlideAction(
-                      text: checkIn == "--/--" ? "Slide to Check In" : "Slide to Check Out",
+                      text: checkIn == "--/--" ? "Свайп для входа" : "Свайп для выхода",
                       textStyle: TextStyle(
                         color: Colors.black54,
                         fontSize: screenWidth / 19,
@@ -224,15 +224,10 @@ class _CheckScreenState extends State<CheckScreen> {
                       innerColor: primary,
                       key: key,
                       onSubmit: () async {
-                        Timer(
-                          const Duration(milliseconds: 600),
-                            () {
-                              key.currentState!.reset();
-                            }
-                        );
+
                         QuerySnapshot snap = await FirebaseFirestore.instance
                             .collection("Employees")
-                            .where('id', isEqualTo: User.username)
+                            .where('id', isEqualTo: User.employeeId)
                             .get();
 
                         DocumentSnapshot snap2 = await FirebaseFirestore
@@ -256,6 +251,7 @@ class _CheckScreenState extends State<CheckScreen> {
                               .doc(
                               DateFormat('dd MMMM yyyy').format(DateTime.now()))
                               .update({
+                            'date': Timestamp.now(),
                             'checkIn': checkIn,
                             'checkOut': DateFormat('hh:mm a').format(DateTime.now()),
                           });
@@ -270,15 +266,24 @@ class _CheckScreenState extends State<CheckScreen> {
                               .doc(
                               DateFormat('dd MMMM yyyy').format(DateTime.now()))
                               .set({
+                            'date': Timestamp.now(),
                             'checkIn': DateFormat('hh:mm a').format(
                                 DateTime.now()),
+                            'checkOut': "--/--",
                           });
                         }
+                        key.currentState!.reset();
                       }
                     );
                   },
               ),
-            ) : const Text("You have completed this day")
+            ) : Text("День завершен",
+              style: TextStyle(
+                  fontFamily: "Nexa Regular",
+                  fontSize: screenWidth / 18 ,
+                  color: Colors.black54
+              ),
+            )
           ],
         ),
       )

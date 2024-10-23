@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 top: screenHeight / 18,
               ),
               child: Text(
-                "Log in",
+                "Вход",
                 style: TextStyle(
                   fontSize: screenWidth / 10,
                   fontFamily: "Nexa Bold",
@@ -69,10 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  fieldTitle("Employee Id"),
-                  customInputField("Enter your employee ID", idController, Icons.person, false),
-                  fieldTitle("Password"),
-                  customInputField("Enter your password", passwordController, Icons.key, true),
+                  fieldTitle("ID Сотрудника"),
+                  customInputField("Введите свой ID", idController, Icons.person, false),
+                  fieldTitle("Пароль"),
+                  customInputField("Введите свой пароль", passwordController, Icons.key, true),
                   GestureDetector(
                     onTap: () async {
                       FocusScope.of(context).unfocus();
@@ -80,9 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       String password = passwordController.text.trim();
 
                       if (id.isEmpty) {
-                        showCustomBottomSheet(context, "ID is steel empty");
+                        showCustomBottomSheet(context, "ID не заполнен");
                       } else if (password.isEmpty) {
-                        showCustomBottomSheet(context, "Password is still empty");
+                        showCustomBottomSheet(context, "Пароль не заполнен");
                       } else {
                         QuerySnapshot snap = await FirebaseFirestore.instance
                             .collection("Employees")
@@ -99,13 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
 
                           } else {
-                            showCustomBottomSheet(context, "Invalid password");
+                            showCustomBottomSheet(context, "Неправильный пароль");
                           }
                         } catch (e) {
                           String error = "";
                           if (e.toString() == "RangeError (length): Invalid value: Valid value range is empty: 0") {
                             setState(() {
-                              error = "ID doesn't exists";
+                              error = "ID не существует";
                             });
                           } else {
                             setState(() {
@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Center(
                         child: Text(
-                            "Access",
+                            "Продолжить",
                             style: TextStyle(
                               fontSize: screenWidth / 15,
                               fontFamily: "Nexa Bold",
