@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hourly/model/user.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -20,7 +24,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController birthController = TextEditingController();
+
+  void pickUploadProfilePicture() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 90,
+    );
+
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("${User.employeeId.toLowerCase()}_profilepic.jpg");
+
+    await ref.putFile(File(image!.path));
+
+    ref.getDownloadURL().then((onValue) async {
+      setState(() {
+        User.profilePicLink = onValue;
+      });
+      await FirebaseFirestore.instance.collection("Employees").doc(User.id).update({
+        'profilePic': onValue,
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +59,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(top: screenHeight / 20, bottom: screenHeight / 35),
-              height: 120,
-              width: 120,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: primary,
-              ),
-              child: const Center(
-                child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 80,
+            GestureDetector(
+              onTap: () {
+                pickUploadProfilePicture();
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: screenHeight / 20, bottom: screenHeight / 35),
+                height: 120,
+                width: 120,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: primary,
+                ),
+                child: Center(
+                  child: User.profilePicLink == " " ? const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 80,
+                  ) : ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.network(User.profilePicLink)
+                  ),
                 ),
               ),
             ),
@@ -59,19 +94,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
             )),
             const SizedBox(height: 24,),
-            customTextField(primary, "Имя", firstNameController),
-            customTextField(primary, "Фамилия", lastNameController),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Дата рождения",
-                style: TextStyle(
-                  fontFamily: "Nexa Bold",
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-            GestureDetector(
+            User.canEdit ? customTextField(primary, "Имя", firstNameController) : field("Имя", User.firstName),
+            User.canEdit ? customTextField(primary, "Фамилия", lastNameController) : field("Фамилия", User.lastName),
+
+            User.canEdit ? GestureDetector(
               onTap: () {
                 showDatePicker(
                     context: context,
@@ -108,32 +134,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   });
                 });
               },
-              child: Container(
-                height: kToolbarHeight,
-                width: screenWidth,
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.only(left: 11),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: Colors.black54,
-                  ),
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    birth,
-                    style: const TextStyle(
-                    fontFamily: "Nexa Bold",
-                    color: Colors.black54,
-                      fontSize: 16,
-                  ),
-                  ),
-                ),
-              ),
-            ),
-            customTextField(primary, "Адрес", addressController),
-            GestureDetector(
+              child: field("Дата рождения", User.birthDate),
+            ) : field("Дата рождения", User.birthDate),
+            User.canEdit ? customTextField(primary, "Адрес", addressController) : field("Адрес", User.address),
+            User.canEdit ? GestureDetector(
               onTap: () async {
                 String firstName = firstNameController.text;
                 String lastName = lastNameController.text;
@@ -147,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     showSnackBar("Пожалуйста введите свою фамилию");
                   } else if(address.isEmpty) {
                     showSnackBar("Пожалуйста введите свой адрес");
-                  } else if(birth.isEmpty) {
+                  } else if(birthDate.isEmpty) {
                     showSnackBar("Пожалуйста введите дату рождения");
                   } else {
                     await FirebaseFirestore.instance.collection("Employees").doc(User.id).update(
@@ -158,7 +162,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         'birthDate': birth,
                         'canEdit': false,
                       }
-                    );
+                    ).then((onValue) {
+                      setState(() {
+                        User.canEdit = false;
+                        User.firstName = firstName;
+                        User.lastName = lastName;
+                        User.birthDate = birthDate;
+                        User.address = address;
+                        User.profilePicLink;
+                      });
+                    });
                   }
                 } else {
                   showSnackBar("Вы не можете редактировать");
@@ -187,10 +200,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-            ),
+            ) : const SizedBox(),
           ],
         )
       )
+    );
+  }
+
+  Widget field(String title, String text) {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontFamily: "Nexa Bold",
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        Container(
+          height: kToolbarHeight,
+          width: screenWidth,
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(left: 11),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: Colors.black54,
+            ),
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontFamily: "Nexa Bold",
+                color: Colors.black54,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
