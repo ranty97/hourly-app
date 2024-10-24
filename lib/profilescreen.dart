@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
-  void pickUploadProfilePicture() async {
+  void pickUploadProfilePic() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
       maxHeight: 512,
@@ -34,17 +34,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("${User.employeeId.toLowerCase()}_profilepic.jpg");
+        .ref().child("${User.employeeId.toLowerCase()}_profilepic.jpg");
 
     await ref.putFile(File(image!.path));
 
-    ref.getDownloadURL().then((onValue) async {
+    ref.getDownloadURL().then((value) async {
       setState(() {
-        User.profilePicLink = onValue;
+        User.profilePicLink = value;
       });
-      await FirebaseFirestore.instance.collection("Employees").doc(User.id).update({
-        'profilePic': onValue,
+
+      await FirebaseFirestore.instance.collection("Employee").doc(User.id).update({
+        'profilePic': value,
       });
     });
   }
@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                pickUploadProfilePicture();
+                pickUploadProfilePic();
               },
               child: Container(
                 margin: EdgeInsets.only(top: screenHeight / 20, bottom: screenHeight / 35),
@@ -169,12 +169,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         User.lastName = lastName;
                         User.birthDate = birthDate;
                         User.address = address;
-                        User.profilePicLink;
                       });
                     });
                   }
                 } else {
-                  showSnackBar("Вы не можете редактировать");
+                  showSnackBar("You cannot edit");
                 }
               },
               child: Container(

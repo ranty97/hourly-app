@@ -40,10 +40,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _getProfilePic() async {
-    DocumentSnapshot doc = await FirebaseFirestore.instance.collection("Employees").doc(User.id).get();
-    setState(() {
-      User.profilePicLink = doc['profilePicLink'];
-    });
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection("Employees").doc(User.id).get();
+      if (doc.exists) {
+        setState(() {
+          User.profilePicLink = doc['profilePic'];
+        });
+      } else {
+        print("Document does not exist");
+      }
+    } catch (e) {
+      print("Error fetching profile picture: $e");
+    }
   }
 
   void _getCredentials() async {
