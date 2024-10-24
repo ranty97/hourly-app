@@ -34,11 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
               height: screenHeight / 3,
               width: screenWidth,
               decoration: BoxDecoration(
-                  color: primary,
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(300),
-                    //bottomLeft: Radius.circular(45)
-                  )
+                color: primary,
+                borderRadius: const BorderRadius.only(
+                  bottomRight: Radius.circular(300),
+                ),
               ),
               child: Center(
                 child: Icon(
@@ -49,13 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(
-                top: screenHeight / 18,
-              ),
+              margin: EdgeInsets.only(top: screenHeight * 0.05),
               child: Text(
                 "Вход",
                 style: TextStyle(
-                  fontSize: screenWidth / 10,
+                  fontSize: screenWidth * 0.1,
                   fontFamily: "Nexa Bold",
                 ),
               ),
@@ -63,8 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               alignment: Alignment.centerRight,
               margin: EdgeInsets.symmetric(
-                horizontal: screenWidth / 12,
-                vertical: screenHeight / 30,
+                horizontal: screenWidth * 0.08,
+                vertical: screenHeight * 0.03,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,14 +87,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             .get();
 
                         try {
-                          if(password == snap.docs[0]['password']) {
+                          if (password == snap.docs[0]['password']) {
                             sharedPreferences = await SharedPreferences.getInstance();
-                            
                             sharedPreferences.setString('employeeId', id).then((_) {
                               Navigator.pushReplacement(context,
                                   MaterialPageRoute(builder: (context) => const HomeScreen()));
                             });
-
                           } else {
                             showCustomBottomSheet(context, "Неправильный пароль");
                           }
@@ -109,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           } else {
                             setState(() {
-                              error = "Error occurred";
+                              error = "Ошибка";
                             });
                           }
                           showCustomBottomSheet(context, error);
@@ -117,22 +112,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       }
                     },
                     child: Container(
-                      height: 65,
+                      height: screenHeight * 0.08,
                       width: screenWidth,
-                      margin: EdgeInsets.only(top: screenHeight / 200),
+                      margin: EdgeInsets.only(top: screenHeight * 0.005),
                       decoration: BoxDecoration(
                         color: primary,
-                        borderRadius: const BorderRadius.all(Radius.circular(35))
+                        borderRadius: const BorderRadius.all(Radius.circular(35)),
                       ),
                       child: Center(
                         child: Text(
-                            "Продолжить",
-                            style: TextStyle(
-                              fontSize: screenWidth / 15,
-                              fontFamily: "Nexa Bold",
-                              color: Colors.white,
-                              letterSpacing: 1.5,
-                            ),
+                          "Продолжить",
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.067,
+                            fontFamily: "Nexa Bold",
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                          ),
                         ),
                       ),
                     ),
@@ -148,11 +143,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget fieldTitle(String title) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(bottom: screenHeight * 0.01),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: screenWidth / 20,
+          fontSize: screenWidth * 0.05,
           fontFamily: "Nexa Bold",
         ),
       ),
@@ -162,31 +157,31 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget customInputField(String hint, TextEditingController controller, IconData icon, bool obscure) {
     return Container(
       width: screenWidth,
-      margin: EdgeInsets.only(bottom: screenHeight / 60),
+      margin: EdgeInsets.only(bottom: screenHeight * 0.016),
       decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(2, 2)
-            )
-          ]
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(2, 2),
+          )
+        ],
       ),
       child: Row(
         children: [
           SizedBox(
-            width: screenWidth / 8,
+            width: screenWidth * 0.1,
             child: Icon(
               icon,
               color: primary,
-              size: screenWidth / 12,
+              size: screenWidth * 0.085,
             ),
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(right: screenWidth / 12),
+              padding: EdgeInsets.only(right: screenWidth * 0.08),
               child: TextFormField(
                 controller: controller,
                 enableSuggestions: false,
@@ -194,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(
-                    vertical: screenHeight / 35,
+                    vertical: screenHeight * 0.025,
                   ),
                   hintText: hint,
                 ),
@@ -236,7 +231,9 @@ void showCustomBottomSheet(BuildContext context, String message) {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.redAccent, backgroundColor: Colors.white, shape: const CircleBorder(),
+                foregroundColor: Colors.redAccent,
+                backgroundColor: Colors.white,
+                shape: const CircleBorder(),
                 padding: const EdgeInsets.all(20),
               ),
               child: const Text(
