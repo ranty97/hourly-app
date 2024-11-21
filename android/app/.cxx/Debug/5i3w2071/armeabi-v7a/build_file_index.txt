@@ -1,0 +1,1 @@
+/home/ranty97/pms-bsuir/hourly/android/app/src/main/cpp/CMakeLists.txt

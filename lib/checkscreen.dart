@@ -1,10 +1,25 @@
 import 'dart:async';
+import 'dart:ffi';
+import 'package:ffi/ffi.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'model/user.dart';
+import 'ffi_bridge.dart';
+
+
+// class NativeLib {
+//   static final DynamicLibrary _lib = DynamicLibrary.open("libmessagefromcpp.so");
+//
+//   static String getWelcomeMessage() {
+//     final getMessageFunction = _lib.lookup<NativeFunction<Pointer<Utf8> Function()>>(
+//         "Java_com_example_hourly_NativeLib_getWelcomeMessage");
+//     final getMessage = getMessageFunction.asFunction<Pointer<Utf8> Function()>();
+//     return getMessage().toDartString();
+//   }
+// }
 
 class CheckScreen extends StatefulWidget {
   const CheckScreen({super.key});
@@ -23,11 +38,29 @@ class _CheckScreenState extends State<CheckScreen> {
 
   Color primary = const Color(0xFF0077B6);
 
+  final FFIBridge _ffiBridge = FFIBridge();
+
   @override
   void initState() {
     super.initState();
     _getRecord();
   }
+
+  // void showWelcomeMessage() {
+  //   String message = NativeLib.getWelcomeMessage();
+  //
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //       action: SnackBarAction(
+  //         label: 'OK',
+  //         onPressed: () {
+  //           // Действие при нажатии на кнопку "OK", если требуется
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _getLocation() async {
     List<Placemark> placemark = await placemarkFromCoordinates(User.lat, User.long);
@@ -77,7 +110,8 @@ class _CheckScreenState extends State<CheckScreen> {
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.only(top: screenWidth * 0.08),
               child: Text(
-                "Здравствуйте",
+                //"Здравствуйте, "
+                _ffiBridge.getTemperature(),
                 style: TextStyle(
                   color: Colors.black54,
                   fontFamily: "Nexa Regular",
@@ -226,6 +260,7 @@ class _CheckScreenState extends State<CheckScreen> {
                     innerColor: primary,
                     key: key,
                     onSubmit: () async {
+                      // showWelcomeMessage();
                       if (User.lat != 0) {
                         _getLocation();
 

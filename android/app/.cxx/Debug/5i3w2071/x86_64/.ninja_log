@@ -1,0 +1,7 @@
+# ninja log v5
+1	263	1732158026908848261	CMakeFiles/messagefromcpp.dir/messagefromcpp.cpp.o	289387ee5e76a42c
+263	289	1732158026935848503	/home/ranty97/pms-bsuir/hourly/build/app/intermediates/cxx/Debug/5i3w2071/obj/x86_64/libmessagefromcpp.so	97af9f6c8194d469
+1	35	1732158315329433860	CMakeFiles/messagefromcpp.dir/messagefromcpp.cpp.o	289387ee5e76a42c
+35	73	1732158315368434210	/home/ranty97/pms-bsuir/hourly/build/app/intermediates/cxx/Debug/5i3w2071/obj/x86_64/libmessagefromcpp.so	97af9f6c8194d469
+2	44	1732158350776685277	CMakeFiles/messagefromcpp.dir/messagefromcpp.cpp.o	289387ee5e76a42c
+44	82	1732158350814685528	/home/ranty97/pms-bsuir/hourly/build/app/intermediates/cxx/Debug/5i3w2071/obj/x86_64/libmessagefromcpp.so	97af9f6c8194d469

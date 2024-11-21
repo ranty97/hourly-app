@@ -1,0 +1,38 @@
+{
+  "buildFiles": [
+    "/home/ranty97/pms-bsuir/hourly/android/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/ranty97/Android/Sdk/cmake/3.31.0/bin/ninja",
+      "-C",
+      "/home/ranty97/pms-bsuir/hourly/android/app/.cxx/Debug/5i3w2071/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/ranty97/Android/Sdk/cmake/3.31.0/bin/ninja",
+    "-C",
+    "/home/ranty97/pms-bsuir/hourly/android/app/.cxx/Debug/5i3w2071/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "messagefromcpp::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "messagefromcpp",
+      "output": "/home/ranty97/pms-bsuir/hourly/build/app/intermediates/cxx/Debug/5i3w2071/obj/x86/libmessagefromcpp.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/ranty97/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/ranty97/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

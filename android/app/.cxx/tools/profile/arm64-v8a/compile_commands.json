@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/ranty97/pms-bsuir/hourly/android/app/.cxx/Debug/5i3w2071/arm64-v8a",
+  "command": "/home/ranty97/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --sysroot=/home/ranty97/Android/Sdk/ndk/23.1.7779620/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dmessagefromcpp_EXPORTS -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fexceptions -frtti -stdlib=libc++ -g  -fno-limit-debug-info -fPIC -o CMakeFiles/messagefromcpp.dir/messagefromcpp.cpp.o -c /home/ranty97/pms-bsuir/hourly/android/app/src/main/cpp/messagefromcpp.cpp",
+  "file": "/home/ranty97/pms-bsuir/hourly/android/app/src/main/cpp/messagefromcpp.cpp",
+  "output": "CMakeFiles/messagefromcpp.dir/messagefromcpp.cpp.o"
+}
+]
